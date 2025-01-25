@@ -1,0 +1,15 @@
+name: QingYuSereverListen
+version: '1.2.2'
+main: org.qingyuserver.qingYuSereverListen.QingYuSereverListen
+api-version: '1.21'
+load: STARTUP
+authors: [ YuZeXingHe ]
+description: Minecraft轻语生存服插件
+
+commands:
+    kills:
+        description: 向自己的身体中引入一些神秘力量来玩死自己
+        usage: /kills
+    ranking:
+        description: 看看服务器哪个是肝帝，哪个天天在摸鱼
+        usage: /ranking <类型>
