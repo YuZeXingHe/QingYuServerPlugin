@@ -10,6 +10,3 @@ commands:
     kills:
         description: 向自己的身体中引入一些神秘力量来玩死自己
         usage: /kills
-    ranking:
-        description: 看看服务器哪个是肝帝，哪个天天在摸鱼
-        usage: /ranking <类型>
