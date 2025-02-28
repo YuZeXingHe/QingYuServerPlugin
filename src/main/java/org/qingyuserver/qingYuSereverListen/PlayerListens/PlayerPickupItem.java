@@ -15,6 +15,6 @@ public class PlayerPickupItem implements Listener {
         Player player = event.getPlayer();
         Item pickedItem = event.getItem();
         Material itemType = pickedItem.getItemStack().getType();
-        Bukkit.getLogger().info("玩家" + player.getName() + "丢下了" + itemType.name());
+        Bukkit.getLogger().info("玩家" + player.getName() + "拾取了" + itemType.name());
     }
 }
