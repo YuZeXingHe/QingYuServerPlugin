@@ -4,8 +4,8 @@
 #### 插件所需依赖：
     PalceHolderAPI：https://www.spigotmc.org/resources/placeholderapi.6245/
     LuckPerms：https://luckperms.net/
-    Expansion-LuckPerms：https://ci.lucko.me/job/LuckPermsPlaceholders/PlaceholderAPI/expansions文件夹中，将Expansion-LuckPerms插件扔进expansions文件夹中，再重启服务器即可。
-导入方法：将PalceHolderAPI与LuckPerms丢入服务器目录下的plugins文件夹中，然后启动您的服务器。启动完成您的服务器后，您需要将服务器关闭，进入plugins/
+    Expansion-LuckPerms：https://ci.lucko.me/job/LuckPermsPlaceholders/
+导入方法：将PalceHolderAPI与LuckPerms丢入服务器目录下的plugins文件夹中，然后启动您的服务器。启动完成您的服务器后，您需要将服务器关闭，进入plugins/PlaceholderAPI/expansions文件夹中，将Expansion-LuckPerms插件扔进expansions文件夹中，再重启服务器即可。
 #### 安装本插件：
     方法1（适合开发者）：git clone https://github.com/YuZeXingHe/QingYuServerPlugin.git
     方法2（适合非开发者）：在Releases中直接下载Jar并导入到服务器的plugins文件夹中
