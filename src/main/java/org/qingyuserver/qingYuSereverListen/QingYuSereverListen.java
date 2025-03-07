@@ -7,6 +7,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.qingyuserver.qingYuSereverListen.Commands.ClearsCommand;
 import org.qingyuserver.qingYuSereverListen.Commands.KillsCommand;
 import org.qingyuserver.qingYuSereverListen.PlayerListens.*;
 import org.qingyuserver.qingYuSereverListen.ServerListens.PlayerDeathGames;
@@ -19,14 +20,19 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public final class QingYuSereverListen extends JavaPlugin {
+    private boolean placeholderEnabled;
+    private PlaceholderExpansions placeholderExpansions;
+
     @Override
     public void onEnable() {
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            placeholderEnabled = true;
+        }
         Bukkit.getScheduler().runTaskTimer(this, this::updateScoreboard, 0, 20);
         getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
         getServer().getPluginManager().registerEvents(new PlayerConsumes(), this);
         getServer().getPluginManager().registerEvents(new PlayerDropItem(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinGames(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitGames(), this);
         getServer().getPluginManager().registerEvents(new PlayerKickGames(), this);
         getServer().getPluginManager().registerEvents(new PlayerOpenChest(), this);
@@ -37,15 +43,20 @@ public final class QingYuSereverListen extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerPickupItem(), this);
         getServer().getPluginManager().registerEvents(new PlayerBucketEmpty(), this);
         getServer().getPluginManager().registerEvents(new PlayerEntityDamage(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinGames(this), this);
         getServer().getPluginManager().registerEvents(new PlayerItemTakeRecorderForChest(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemDepositRecorderForChest(), this);
         this.getCommand("kills").setExecutor(new KillsCommand());
+        this.getCommand("clears").setExecutor(new ClearsCommand());
+        placeholderExpansions = new PlaceholderExpansions(this);
+        placeholderExpansions.register();
         getLogger().info("轻语服务器插件加载成功！");
         getLogger().info("插件加载成功，如遇到错误，请在群内联系服务器管理员！");
     }
 
     @Override
     public void onDisable() {
+        placeholderExpansions.unregister();
         getLogger().info("插件卸载成功，如遇到错误，请在群内联系服务器管理员！");
     }
 
@@ -76,9 +87,13 @@ public final class QingYuSereverListen extends JavaPlugin {
         objective.getScore("特性：§bJava Edition§r").setScore(4);
         objective.getScore("时间：§b" + formattedTime + "§r").setScore(3);
         objective.getScore("服务器TPS：§b" + String.format("%.1f", tpsValue) + "§r").setScore(2);
-        objective.getScore("服务器版本：§b1.4.0§r").setScore(1);
-        objective.getScore("游戏版本：§b1.21.1§r").setScore(0);
+        objective.getScore("服务器版本：§b1.5.0§r").setScore(1);
+        objective.getScore("游戏版本：§b1.21.3§r").setScore(0);
 
         player.setScoreboard(scoreboard);
+    }
+
+    public boolean isplaceholderEnabled() {
+        return placeholderEnabled;
     }
 }
