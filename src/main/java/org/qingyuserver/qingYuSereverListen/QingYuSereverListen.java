@@ -1,42 +1,39 @@
 package org.qingyuserver.qingYuSereverListen;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.qingyuserver.qingYuSereverListen.Commands.ClearsCommand;
-import org.qingyuserver.qingYuSereverListen.Commands.KillsCommand;
+import org.qingyuserver.qingYuSereverListen.Commands.*;
 import org.qingyuserver.qingYuSereverListen.PlayerListens.*;
-import org.qingyuserver.qingYuSereverListen.ServerListens.PlayerDeathGames;
-import org.qingyuserver.qingYuSereverListen.ServerListens.PlayerJoinGames;
-import org.qingyuserver.qingYuSereverListen.ServerListens.PlayerKickGames;
-import org.qingyuserver.qingYuSereverListen.ServerListens.PlayerQuitGames;
+import org.qingyuserver.qingYuSereverListen.ServerListens.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-public final class QingYuSereverListen extends JavaPlugin {
+public final class QingYuSereverListen extends JavaPlugin implements Listener {
     private boolean placeholderEnabled;
     private PlaceholderExpansions placeholderExpansions;
+    private final Map<UUID, Inventory> playerWarehouses = new HashMap<>();
 
     @Override
     public void onEnable() {
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             placeholderEnabled = true;
         }
-        Bukkit.getScheduler().runTaskTimer(this, this::updateScoreboard, 0, 20);
+        getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
         getServer().getPluginManager().registerEvents(new PlayerConsumes(), this);
         getServer().getPluginManager().registerEvents(new PlayerDropItem(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitGames(), this);
-        getServer().getPluginManager().registerEvents(new PlayerKickGames(), this);
         getServer().getPluginManager().registerEvents(new PlayerOpenChest(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeathGames(), this);
         getServer().getPluginManager().registerEvents(new PlayerBreakBlock(), this);
         getServer().getPluginManager().registerEvents(new PlayerPlaceBlock(), this);
         getServer().getPluginManager().registerEvents(new PlayerKillEntity(), this);
@@ -44,10 +41,13 @@ public final class QingYuSereverListen extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerBucketEmpty(), this);
         getServer().getPluginManager().registerEvents(new PlayerEntityDamage(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinGames(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerItemTakeRecorderForChest(), this);
-        getServer().getPluginManager().registerEvents(new PlayerItemDepositRecorderForChest(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathGames(this), this);
+        this.getCommand("ck").setExecutor(new CangKuCommand());
         this.getCommand("kills").setExecutor(new KillsCommand());
         this.getCommand("clears").setExecutor(new ClearsCommand());
+        this.getCommand("ranking").setExecutor(new RankingCommand());
+        this.getCommand("killsitem").setExecutor(new KillsItemCommand());
+        this.getCommand("ranking").setTabCompleter(new RankingCommand());
         placeholderExpansions = new PlaceholderExpansions(this);
         placeholderExpansions.register();
         getLogger().info("轻语服务器插件加载成功！");
@@ -58,39 +58,6 @@ public final class QingYuSereverListen extends JavaPlugin {
     public void onDisable() {
         placeholderExpansions.unregister();
         getLogger().info("插件卸载成功，如遇到错误，请在群内联系服务器管理员！");
-    }
-
-    private void updateScoreboard() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            updatePlayerScoreboard(player);
-        }
-    }
-
-    private void updatePlayerScoreboard(Player player) {
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard scoreboard = manager.getNewScoreboard();
-
-        Objective objective = scoreboard.getObjective("info");
-        if (objective == null) {
-            objective = scoreboard.registerNewObjective("info", "dummy", "Minecraft轻语生存服");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        }
-
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"));
-        String formattedTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-        double[] tps = Bukkit.getServer().getTPS();
-        double tpsValue = tps[0];
-
-        objective.getScore("Java版支持：§b开启§r").setScore(6);
-        objective.getScore("基岩版支持：§b开启§r").setScore(5);
-        objective.getScore("特性：§bJava Edition§r").setScore(4);
-        objective.getScore("时间：§b" + formattedTime + "§r").setScore(3);
-        objective.getScore("服务器TPS：§b" + String.format("%.1f", tpsValue) + "§r").setScore(2);
-        objective.getScore("服务器版本：§b1.5.0§r").setScore(1);
-        objective.getScore("游戏版本：§b1.21.3§r").setScore(0);
-
-        player.setScoreboard(scoreboard);
     }
 
     public boolean isplaceholderEnabled() {

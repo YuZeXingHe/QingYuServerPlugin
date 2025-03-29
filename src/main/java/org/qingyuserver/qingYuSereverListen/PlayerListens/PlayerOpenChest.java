@@ -21,7 +21,9 @@ public class PlayerOpenChest implements Listener {
                 if (state instanceof Chest) {
                     Chest chest = (Chest) state;
                     String location = chest.getLocation().toString();
-                    Bukkit.getLogger().info("玩家" + player.getName() + "打开了箱子，位置：" + location);
+                    if (location != null) {
+                        Bukkit.getLogger().info("玩家" + player.getName() + "打开了箱子，位置：" + location);
+                    }
                 }
             }
         }
